@@ -119,7 +119,7 @@
 
     const option = reactive({
         title: {
-            text: '散点图和折线图'
+            text: '散点图DEMO'
         },
         tooltip: {
             trigger: 'axis',
@@ -144,7 +144,9 @@
             }
         },
 
-
+        legend:{
+            width:300,
+        },
               
         xAxis: {
             type: 'value',
@@ -185,14 +187,16 @@
                 }
                 
 
-           }
+           },
+           orient: 'vertical',  // 工具箱纵向排列
+           right: 20, // 工具箱距离图表右侧的距离
         },     
      
         series: [
             {
             name: '序列1',
             type: 'scatter',
-            symbolSize: 1,
+            symbolSize:2,
               itemStyle:{
      
                     color:"blue"
@@ -206,7 +210,7 @@
         }, {
             name: '序列2',
             type: 'scatter',
-            symbolSize: 1,
+            symbolSize:2,
             itemStyle: {
      
                     color: "green"
@@ -218,7 +222,7 @@
         },{
             name: '序列3',
             type: 'scatter',
-            symbolSize: 1,
+            symbolSize:2,
             itemStyle: {
      
                     color: "black"
@@ -230,7 +234,7 @@
         },{
             name: '序列4',
             type: 'scatter',
-            symbolSize: 1,
+            symbolSize:2,
             itemStyle: {
      
                     color: "black"
@@ -242,7 +246,7 @@
         },{
             name: '序列5',
             type: 'scatter',
-            symbolSize: 1,
+            symbolSize:2,
             itemStyle: {
      
                     color:'#da70d6'
@@ -254,7 +258,7 @@
         },{
             name: '序列6',
             type: 'scatter',
-            symbolSize: 1,
+            symbolSize:2,
             itemStyle: {
      
                     color:'#da70d6'
@@ -266,7 +270,7 @@
         },{
             name: '序列7',
             type: 'scatter',
-            symbolSize: 1,
+            symbolSize:2,
             itemStyle: {
      
                     color:'#8250df'
@@ -298,7 +302,8 @@
         })
     })
 
- 
+
+
 
     // 在vue3中，由于响应式代理的特性，echarts官方文档不建议直接使用ref或者reactive来代理echarts的实例对象，它会造成许多预料之外的错误，如：
     // 1.tooltips无法显示
@@ -306,6 +311,7 @@
 
     // 所以建议声明一个非响应式的变量来代理echarts实例对象，然后在onMounted钩子函数中初始化echarts实例对象，最后在onUnmounted钩子函数中销毁echarts实例对象，或者使用shallowRef代理echarts实例对象，这样就不会造成上述问题了。
 
+    
 
 
     onMounted( () => {
@@ -335,7 +341,7 @@
 
 <template>
 
-    <div ref="chartContainer" style="width:400px;height:300px;">
+    <div ref="chartContainer" style="width:600px;height:400px;margin-top: 50px;">
         
     </div>
     <div class="color">
