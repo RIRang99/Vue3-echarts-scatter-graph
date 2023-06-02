@@ -122,51 +122,75 @@
             text: '散点图DEMO'
         },
         tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'cross'
-            },
+            // trigger: 'axis',
+            // axisPointer: {
+            //     type: 'cross'
+            // },
             show:true,
-            formatter:function (params) {
-                // 遍历params，将params中在相同x坐标上对应的所有存在散点的y值提取出来，然后将这些y值按照从小到大的顺序排列，最后将这些y值拼接成一个字符串，作为tooltip的返回值
-                let yValues = []
-                params.forEach(item=>{
-                //    如果seriesName存在"序列"2个字，说明是散点图，将其y值和对应的seriesName作为一个对象存入yValues数组中
-                    if(item.seriesName.includes('序列')){
-                        yValues.push({
-                            y:item.value[1],
-                            seriesName:item.seriesName
-                        })
-                    }
-                })
-                // 返回值为如下格式x:x坐标的值,seriesName1:y值1,seriesName2:y值2,seriesName3:y值3
-                return `x坐标:${params[0].value[0]}</br>${yValues.sort((a,b)=>a.y-b.y).map(item=>`${item.seriesName}:${item.y}`).join('</br>')}`
-            }
+            // formatter:function (params) {
+            //     // 遍历params，将params中在相同x坐标上对应的所有存在散点的y值提取出来，然后将这些y值按照从小到大的顺序排列，最后将这些y值拼接成一个字符串，作为tooltip的返回值
+            //     console.log(params);
+            //     let yValues = []
+            //     params.forEach(item=>{
+            //     //    如果seriesName存在"序列"2个字，说明是散点图，将其y值和对应的seriesName作为一个对象存入yValues数组中
+            //         if(item.seriesName.includes('序列')){
+            //             yValues.push({
+            //                 y:item.value[1],
+            //                 seriesName:item.seriesName
+            //             })
+            //         }
+            //     })
+            //     // 返回值为如下格式x:x坐标的值,seriesName1:y值1,seriesName2:y值2,seriesName3:y值3
+            //     return `x坐标:${params[0].value[0]}</br>${yValues.sort((a,b)=>a.y-b.y).map(item=>`${item.seriesName}:${item.y}`).join('</br>')}`
+            // }
         },
+
+     
 
         legend:{
             width:300,
         },
-              
+        grid:{
+            right:100,
+            left:100
+        },
         xAxis: {
             type: 'value',
-         
-            splitLine: { show: true }
+            // 每格最小单位用科学计数法表示，且不会被js引擎默认转化为自然数
+            name:'小明m/s',
+            nameTextStyle:{
+                color:'red',
+                fontWeight:'bold',
+                backgroundColor:'rgba(0,23,11,0.3)',
+                overflow:'breakAll',
+                width:20,
+
+            },
+            
+            axisLabel:{
+                formatter:function(value){
+                    return value.toExponential(4)
+                },
+                rotate: 45,
+                snap:true,
+            }
         },
         yAxis: {
-            splitLine: { show: true },
-            type: 'value'
+            type: 'value',
+            name:'小红m/s',
+            axisLabel:{
+                snap:true,
+
+                formatter:function(value){
+                    return value.toExponential(4)
+                },
+                // rotate: 30,
+            }
         },
+        // 缩放功能，每个对象可以对应不同类型的缩放模式
         dataZoom:[
             {
                 type:'inside',
-              },{
-                type:'slider',
-                show:true,
-                xAxisIndex:[0],
-                start:0,
-                end:100,
-                filterMode:'filter'
               }
         ],
        toolbox:{
@@ -194,8 +218,12 @@
      
         series: [
             {
+                emphasis: {
+                disabled:false
+                 },
             name: '序列1',
             type: 'scatter',
+            
             symbolSize:2,
               itemStyle:{
      
@@ -208,6 +236,9 @@
          
   
         }, {
+            emphasis: {
+                disabled:false
+                 },
             name: '序列2',
             type: 'scatter',
             symbolSize:2,
@@ -220,6 +251,9 @@
              
             ],
         },{
+            emphasis: {
+                disabled:false
+                 },
             name: '序列3',
             type: 'scatter',
             symbolSize:2,
@@ -232,9 +266,14 @@
               
             ],
         },{
+            id:2,
+            emphasis: {
+                disabled:false
+                 },
             name: '序列4',
-            type: 'scatter',
-            symbolSize:2,
+            type: 'line',
+            symbolSize:3,
+     
             itemStyle: {
      
                     color: "black"
@@ -243,19 +282,27 @@
             data: [
             
             ],
+            smooth:true
         },{
+            id:1,
             name: '序列5',
             type: 'scatter',
-            symbolSize:2,
+            symbolSize:5,
             itemStyle: {
      
                     color:'#da70d6'
                 
             },
+            emphasis: {
+                disabled:false
+                 },
             data: [
                
             ]
         },{
+            emphasis: {
+                disabled:false
+                 },
             name: '序列6',
             type: 'scatter',
             symbolSize:2,
@@ -268,6 +315,9 @@
              
             ]
         },{
+            emphasis: {
+                disabled:false
+                 },
             name: '序列7',
             type: 'scatter',
             symbolSize:2,
@@ -282,8 +332,6 @@
         }
     ]
     })
-
-   
 
 
     let chartInstance 
@@ -304,28 +352,59 @@
 
 
 
-
     // 在vue3中，由于响应式代理的特性，echarts官方文档不建议直接使用ref或者reactive来代理echarts的实例对象，它会造成许多预料之外的错误，如：
     // 1.tooltips无法显示
     // 2.dataZoom无法使用
 
     // 所以建议声明一个非响应式的变量来代理echarts实例对象，然后在onMounted钩子函数中初始化echarts实例对象，最后在onUnmounted钩子函数中销毁echarts实例对象，或者使用shallowRef代理echarts实例对象，这样就不会造成上述问题了。
+    const chooseSeriseHighLight = ()=>{
+       // 监听鼠标移动事件
+chartInstance.on('mouseover', function(params) {
+  const tooltipVisible = chartInstance.getModel().getComponent('tooltip').option.show; // 判断tooltip是否显示
 
-    
+// q:为什么序列4的tooltip不显示
+
+
+  if (tooltipVisible) {
+    const currentSeriesId = params.seriesId; // 当前鼠标悬浮的 series 的 ID
+
+    if (currentSeriesId) {
+      const nextSeriesId = currentSeriesId === '1' ? '2' : '1'; // 下一个需要高亮的 series 的 ID
+
+      // 遍历所有 series
+      option.series.forEach((series) => {
+        if (series.id === currentSeriesId || series.id === nextSeriesId) {
+          series.emphasis = {
+            disabled: true
+          };
+        } else {
+          series.emphasis = {
+            disabled: false
+          };
+        }
+      });
+
+      // 更新图表配置项
+      chartInstance.setOption(option);
+    }
+  } 
+});
+
+    }
 
 
     onMounted( () => {
 
     chartInstance  =  echarts.init(chartContainer.value);
       chartInstance.setOption(option)
+      chooseSeriseHighLight()
 
 
-     
     })
 
     const changeToRed = ()=>{
-        // 找到option中name==='散点'的series，将其itemStyle.color改为'red'
-        option.series.find(item=>item.name==='散点').itemStyle.color = 'red'
+    //   找到series中name为序列1的对象，将其itemStyle中的color改为红色
+        option.series.find(item=>item.name==='序列4').itemStyle.color = 'red'
         chartInstance.setOption(option)
        
 
